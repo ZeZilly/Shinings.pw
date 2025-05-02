@@ -12,9 +12,9 @@
     <meta property="og:description" content="Adana'nın en modern ve lüks spa & wellness merkezi. Şimdi randevu alın, kendinizi ödüllendirin!">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://shiningbeauty.com.tr/">
-    <meta property="og:image" content="/shining logo.png">
+    <meta property="og:image" content="/shining-logo.png">
     <link rel="canonical" href="https://shiningbeauty.com.tr/" />
-    <link rel="icon" type="image/png" href="/shining logo.png">
+    <link rel="icon" type="image/png" href="/shining-logo.png">
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -73,6 +73,63 @@
             box-shadow: 0 2px 16px 0 rgba(217,179,106,0.12);
             display: flex; align-items: center;
             transition: background 0.3s, box-shadow 0.3s;
+            padding: 0 16px;
+        }
+        @media (max-width: 768px) {
+            .modern-navbar {
+                justify-content: space-between;
+                padding: 0 20px;
+            }
+            .modern-navbar .flex-1 {
+                position: fixed;
+                top: 62px;
+                left: 0;
+                right: 0;
+                background: rgba(24, 24, 24, 0.98);
+                backdrop-filter: blur(14px);
+                flex-direction: column;
+                padding: 20px;
+                transform: translateY(-100%);
+                transition: transform 0.3s ease;
+                border-radius: 0 0 24px 24px;
+            }
+            .modern-navbar .flex-1.active {
+                transform: translateY(0);
+            }
+            .modern-navbar .nav-link {
+                width: 100%;
+                text-align: center;
+                padding: 12px;
+                margin: 4px 0;
+            }
+            .hamburger {
+                display: block;
+            }
+            .inline-social {
+                display: none;
+            }
+        }
+        .hamburger {
+            display: none;
+            cursor: pointer;
+            padding: 8px;
+            z-index: 60;
+        }
+        .hamburger div {
+            width: 25px;
+            height: 2px;
+            background-color: var(--accent);
+            margin: 6px 0;
+            transition: 0.3s;
+        }
+        .hamburger.active div:nth-child(1) {
+            transform: rotate(-45deg) translate(-5px, 6px);
+        }
+        .hamburger.active div:nth-child(2) {
+            opacity: 0;
+        }
+        .hamburger.active div:nth-child(3) {
+            transform: rotate(45deg) translate(-5px, -6px);
         }
         .modern-navbar.scrolled {
             background: rgba(24, 24, 24, 0.85);
@@ -210,8 +267,15 @@
     </div>
     <!-- Navbar -->
     <nav id="navbar" class="modern-navbar">
-        <img src="shining logo.png" alt="Shining Beauty Logo" style="height:64px; width:64px; margin-right:16px; border-radius:16px; background:rgba(0,0,0,0.08); box-shadow:0 2px 8px #0002; object-fit:cover; vertical-align:middle;" />
-        <span class="logo" style="font-size:2.3rem; vertical-align:middle; line-height:1; display:inline-block; margin-top:0;">Shining Beauty</span>
+        <div class="flex items-center">
+            <img src="shining-logo.png" alt="Shining Beauty Logo" style="height:48px; width:48px; margin-right:12px; border-radius:12px; background:rgba(0,0,0,0.08); box-shadow:0 2px 8px #0002; object-fit:cover; vertical-align:middle;" />
+            <span class="logo" style="font-size:1.8rem; vertical-align:middle; line-height:1; display:inline-block; margin-top:0;">Shining Beauty</span>
+        </div>
+        <div class="hamburger">
+            <div></div>
+            <div></div>
+            <div></div>
+        </div>
         <div class="flex-1 flex justify-center items-center">
             <a href="#home" class="nav-link">Ana Sayfa</a>
             <a href="#about" class="nav-link">Hakkımızda</a>
@@ -291,6 +355,117 @@
             <!-- ... (hizmet kartları aynı kalacak) ... -->
         </div>
     </section>
+    <!-- Galeri Bölümü -->
+    <section id="gallery" class="py-20 bg-primary-dark">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-12">
+                <span class="section-heading">Galeri</span>
+                <h2 class="text-3xl md:text-4xl font-bold text-accent mb-4">Hizmetlerimizden Örnekler</h2>
+                <p class="max-w-2xl mx-auto text-lg text-text-dark">Shining Beauty Spa & Wellness Merkezi'nde sunduğumuz hizmetlerin ve sonuçların görsel örnekleri.</p>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
+                <!-- Resim ve Video Kartları -->
+                <div class="gallery-item relative rounded-lg overflow-hidden shadow-lg transition-all duration-300 hover:scale-105 cursor-pointer" onclick="openLightbox(this)" ontouchstart="handleTouchStart(event)" ontouchend="handleTouchEnd(event, this)">
+                    <img src="uploads/reel2.png" alt="Hizmet Örneği 1" class="w-full h-48 md:h-64 object-cover" loading="lazy">
+                    <div class="absolute inset-0 bg-black bg-opacity-40 opacity-0 hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                        <span class="text-white text-lg font-semibold">Görüntüle</span>
+                    </div>
+                </div>
+                <div class="gallery-item relative rounded-lg overflow-hidden shadow-lg transition-all duration-300 hover:scale-105 cursor-pointer" onclick="openLightbox(this)" ontouchstart="handleTouchStart(event)" ontouchend="handleTouchEnd(event, this)">
+                    <img src="uploads/reel3.png" alt="Hizmet Örneği 2" class="w-full h-48 md:h-64 object-cover" loading="lazy">
+                    <div class="absolute inset-0 bg-black bg-opacity-40 opacity-0 hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                        <span class="text-white text-lg font-semibold">Görüntüle</span>
+                    </div>
+                </div>
+                <!-- Lightbox Modal -->
+                <div id="lightbox" class="fixed inset-0 bg-black bg-opacity-95 z-50 hidden" ontouchstart="handleLightboxTouchStart(event)" ontouchend="handleLightboxTouchEnd(event)">
+                    <div class="relative w-full h-full flex items-center justify-center p-4">
+                        <button onclick="closeLightbox()" class="absolute top-4 right-4 text-white text-2xl hover:text-accent transition-colors z-10">
+                            <i class="fas fa-times"></i>
+                        </button>
+                        <img id="lightbox-img" src="" alt="Büyük Görüntü" class="max-h-[85vh] max-w-[90vw] object-contain rounded-lg">
+                        <div class="absolute bottom-4 left-0 right-0 text-center text-white text-sm opacity-70">Kapatmak için kaydırın</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script>
+            // Touch işlemleri için değişkenler
+            let touchStartY = 0;
+            let touchEndY = 0;
+            let touchStartX = 0;
+            let touchEndX = 0;
+            let touchStartTime = 0;
+
+            function handleTouchStart(event) {
+                touchStartY = event.touches[0].clientY;
+                touchStartX = event.touches[0].clientX;
+                touchStartTime = new Date().getTime();
+            }
+
+            function handleTouchEnd(event, element) {
+                touchEndY = event.changedTouches[0].clientY;
+                touchEndX = event.changedTouches[0].clientX;
+                const touchEndTime = new Date().getTime();
+                const touchDuration = touchEndTime - touchStartTime;
+
+                // Hızlı dokunma kontrolü (300ms'den kısa)
+                if (touchDuration < 300 && Math.abs(touchEndY - touchStartY) < 20 && Math.abs(touchEndX - touchStartX) < 20) {
+                    openLightbox(element);
+                }
+            }
+
+            function handleLightboxTouchStart(event) {
+                touchStartY = event.touches[0].clientY;
+            }
+
+            function handleLightboxTouchEnd(event) {
+                touchEndY = event.changedTouches[0].clientY;
+                if (touchEndY - touchStartY > 50) { // Aşağı kaydırma
+                    closeLightbox();
+                }
+            }
+
+            function openLightbox(element) {
+                const img = element.querySelector('img');
+                const lightbox = document.getElementById('lightbox');
+                const lightboxImg = document.getElementById('lightbox-img');
+                
+                lightboxImg.src = img.src;
+                lightboxImg.alt = img.alt;
+                lightbox.classList.remove('hidden');
+                lightbox.style.display = 'flex';
+                document.body.style.overflow = 'hidden';
+
+                // Mobil cihazlarda daha iyi performans için
+                if (window.innerWidth <= 768) {
+                    lightboxImg.style.maxHeight = '85vh';
+                    lightboxImg.style.maxWidth = '90vw';
+                }
+            }
+            
+            function closeLightbox() {
+                const lightbox = document.getElementById('lightbox');
+                lightbox.classList.add('hidden');
+                document.body.style.overflow = 'auto';
+            }
+            
+            // ESC tuşu ile lightbox'ı kapatma
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') {
+                    closeLightbox();
+                }
+            });
+            
+            // Lightbox dışına tıklama ile kapatma
+            document.getElementById('lightbox').addEventListener('click', function(e) {
+                if (e.target === this) {
+                    closeLightbox();
+                }
+            });
+        </script>
+    </section>
+
     <!-- Yorumlar/Testimonial Bölümü -->
     <section id="testimonials" class="py-20 bg-primary-light text-accent-light">
         <div class="container mx-auto px-4">
@@ -520,7 +695,7 @@
         <div class="container mx-auto flex flex-col md:flex-row justify-between items-start gap-8">
             <div class="footer-brand mb-8 md:mb-0 flex flex-col items-start">
                 <!-- Büyük ve net logo -->
-                <img src="shining logo.png" alt="Shining Beauty Logo" style="width:140px;max-width:90vw;height:auto;margin-bottom:18px;display:block;border-radius:18px;background:rgba(0,0,0,0.10);box-shadow:0 4px 16px 0 rgba(0,0,0,0.14);object-fit:contain;" />
+                <img src="shining-logo.png" alt="Shining Beauty Logo" style="width:140px;max-width:90vw;height:auto;margin-bottom:18px;display:block;border-radius:18px;background:rgba(0,0,0,0.10);box-shadow:0 4px 16px 0 rgba(0,0,0,0.14);object-fit:contain;" />
                 <!-- Mat sosyal medya ikonları -->
                 <div class="footer-social flex gap-3 mb-3">
                     <a href="https://www.instagram.com/shining.beauty.wellness?igsh=aDBpcDRidHN1cmdp" target="_blank" aria-label="Instagram" style="color:#fff;background:#23201c;border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;opacity:0.7;"><i class="fab fa-instagram"></i></a>
@@ -555,12 +730,57 @@
         </div>
     </footer>
     <script>
-        // Navbar scroll transparency
+        // Navbar scroll effect and mobile menu
+        const navbar = document.getElementById('navbar');
+        const hamburger = document.querySelector('.hamburger');
+        const navMenu = document.querySelector('.flex-1');
+
+        // Scroll effect
         window.addEventListener('scroll', function() {
-            const nav = document.getElementById('navbar');
-            if(window.scrollY > 20) nav.classList.add('scrolled');
-            else nav.classList.remove('scrolled');
+            if (window.scrollY > 50) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
         });
+
+        // Mobile menu toggle
+        hamburger.addEventListener('click', function() {
+            hamburger.classList.toggle('active');
+            navMenu.classList.toggle('active');
+        });
+
+        // Close mobile menu when clicking outside
+        document.addEventListener('click', function(e) {
+            if (!navbar.contains(e.target) && navMenu.classList.contains('active')) {
+                hamburger.classList.remove('active');
+                navMenu.classList.remove('active');
+            }
+        });
+
+        // Close mobile menu when clicking nav links
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', () => {
+                hamburger.classList.remove('active');
+                navMenu.classList.remove('active');
+            });
+        });
+
+        // Touch events for better mobile interaction
+        let touchStartY = 0;
+        let touchEndY = 0;
+
+        document.addEventListener('touchstart', e => {
+            touchStartY = e.touches[0].clientY;
+        }, false);
+
+        document.addEventListener('touchend', e => {
+            touchEndY = e.changedTouches[0].clientY;
+            if (touchEndY < touchStartY && touchStartY - touchEndY > 50) {
+                hamburger.classList.remove('active');
+                navMenu.classList.remove('active');
+            }
+        }, false);
     </script>
     <style>
         .modern-footer { margin-top: 0 !important; }
