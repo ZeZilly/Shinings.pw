@@ -11,7 +11,7 @@
     <meta property="og:title" content="Shining Beauty | Spa ve Wellness Merkezi">
     <meta property="og:description" content="Adana'nın en modern ve lüks spa & wellness merkezi. Şimdi randevu alın, kendinizi ödüllendirin!">
     <meta property="og:type" content="website">
-    <meta property="og:url" content="https://shiningbeauty.com.tr/">
+    <meta property="og:url" content="https://shining.pw/">
     <meta property="og:image" content="/shining-logo.png">
     <link rel="canonical" href="https://shiningbeauty.com.tr/" />
     <link rel="icon" type="image/png" href="/shining-logo.png">
@@ -20,6 +20,22 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Playfair+Display:wght@700&family=Pacifico&display=swap" rel="stylesheet">
+    <!-- Lightbox Modal -->
+    <div id="lightbox" class="fixed inset-0 z-50 hidden bg-black bg-opacity-90 flex items-center justify-center">
+        <div class="relative max-w-4xl mx-auto p-4 w-full">
+            <button onclick="closeLightbox()" class="absolute top-4 right-4 text-white text-3xl hover:text-accent transition-colors duration-200">&times;</button>
+            <div id="lightbox-content" class="relative w-full h-full flex items-center justify-center">
+                <!-- İçerik buraya dinamik olarak eklenecek -->
+            </div>
+            <div class="absolute left-4 top-1/2 transform -translate-y-1/2">
+                <button onclick="previousItem()" class="text-white text-4xl hover:text-accent transition-colors duration-200">&#10094;</button>
+            </div>
+            <div class="absolute right-4 top-1/2 transform -translate-y-1/2">
+                <button onclick="nextItem()" class="text-white text-4xl hover:text-accent transition-colors duration-200">&#10095;</button>
+            </div>
+        </div>
+    </div>
+
     <style>
         :root {
             --primary: #181818;
@@ -257,6 +273,118 @@
             transform: scale(1.12);
         }
     </style>
+    <script>
+        // Global variables for gallery and touch interactions
+        let currentIndex = 0;
+        let galleryItems = [];
+        
+        // Touch variables for all interactions
+        let galleryTouchStartX = 0;
+        let galleryTouchEndX = 0;
+        let navTouchStartY = 0;
+        let navTouchEndY = 0;
+        let sliderTouchStartX = 0;
+        let sliderTouchEndX = 0;
+        let sliderTouchStartY = 0;
+        let sliderTouchEndY = 0;
+        let touchStartTime = 0;
+
+        function handleTouchStart(event) {
+            galleryTouchStartX = event.touches[0].clientX;
+        }
+
+        function handleTouchEnd(event, element) {
+            galleryTouchEndX = event.changedTouches[0].clientX;
+            const touchDiff = galleryTouchStartX - galleryTouchEndX;
+
+            if (Math.abs(touchDiff) < 5) {
+                openLightbox(element);
+            } else if (touchDiff > 50) {
+                // Swipe left - next
+                nextItem();
+            } else if (touchDiff < -50) {
+                // Swipe right - previous
+                previousItem();
+            }
+        }
+
+        function openLightbox(element) {
+            const lightbox = document.getElementById('lightbox');
+            const lightboxContent = document.getElementById('lightbox-content');
+            galleryItems = Array.from(document.querySelectorAll('.gallery-item'));
+            currentIndex = galleryItems.indexOf(element);
+
+            updateLightboxContent();
+            lightbox.classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeLightbox() {
+            const lightbox = document.getElementById('lightbox');
+            const lightboxContent = document.getElementById('lightbox-content');
+            const video = lightboxContent.querySelector('video');
+            
+            if (video) {
+                video.pause();
+            }
+            
+            lightbox.classList.add('hidden');
+            document.body.style.overflow = '';
+        }
+
+        function updateLightboxContent() {
+            const lightboxContent = document.getElementById('lightbox-content');
+            const currentItem = galleryItems[currentIndex];
+            const mediaElement = currentItem.querySelector('img, video');
+            
+            if (mediaElement.tagName === 'VIDEO') {
+                const video = document.createElement('video');
+                video.src = mediaElement.src;
+                video.classList.add('max-h-[80vh]', 'w-auto');
+                video.controls = true;
+                video.autoplay = true;
+                lightboxContent.innerHTML = '';
+                lightboxContent.appendChild(video);
+            } else {
+                const img = document.createElement('img');
+                img.src = mediaElement.src;
+                img.alt = mediaElement.alt;
+                img.classList.add('max-h-[80vh]', 'w-auto');
+                lightboxContent.innerHTML = '';
+                lightboxContent.appendChild(img);
+            }
+        }
+
+        function nextItem() {
+            if (currentIndex < galleryItems.length - 1) {
+                currentIndex++;
+            } else {
+                currentIndex = 0;
+            }
+            updateLightboxContent();
+        }
+
+        function previousItem() {
+            if (currentIndex > 0) {
+                currentIndex--;
+            } else {
+                currentIndex = galleryItems.length - 1;
+            }
+            updateLightboxContent();
+        }
+
+        document.addEventListener('keydown', function(event) {
+            if (!document.getElementById('lightbox').classList.contains('hidden')) {
+                if (event.key === 'Escape') {
+                    closeLightbox();
+                } else if (event.key === 'ArrowRight') {
+                    nextItem();
+                } else if (event.key === 'ArrowLeft') {
+                    previousItem();
+                }
+            }
+        });
+    </script>
 </head>
 <body>
     <!-- Modern Social Icons (sol alt sabit) -->
@@ -291,9 +419,9 @@
             <a href="https://www.facebook.com/profile.php?id=61572925680179" class="facebook" target="_blank" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
         </div>
     </nav>
-    <!-- Hero Section with Video Background -->
+    <!-- Hero Section with Image Background -->
     <section id="home" class="hero-section flex items-center justify-center min-h-[70vh] relative overflow-hidden" style="background: #181818;">
-        <video autoplay loop muted playsinline poster="https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=800&q=80" class="absolute inset-0 w-full h-full object-cover opacity-60" style="pointer-events: none;"></video>
+        <img src="https://images.unsplash.com/photo-1560750588-73207b1ef5b8?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="Spa Interior" class="absolute inset-0 w-full h-full object-cover opacity-60" style="pointer-events: none;">
         <div class="relative z-10 flex flex-col items-center justify-center w-full h-full text-center py-20">
             <h1 class="font-bold text-4xl md:text-6xl mb-2 text-accent drop-shadow-xl">Shining Beauty & Wellness</h1>
             <div class="mb-6">
@@ -301,7 +429,7 @@
             </div>
             <div class="flex gap-6 justify-center">
                 <a href="#services" class="cta-btn transition-transform transform hover:scale-105">Hizmetlerimizi Keşfet</a>
-                <a href="#contact" class="cta-btn transition-transform transform hover:scale-105" style="background:transparent;border:2px solid var(--accent);color:var(--accent);">Hemen Randevu Al</a>
+                <a href="https://wa.me/905050719501" class="cta-btn transition-transform transform hover:scale-105" style="background:transparent;border:2px solid var(--accent);color:var(--accent);" target="_blank">Hemen Randevu Al</a>
             </div>
         </div>
         <div class="absolute inset-0 bg-gradient-to-b from-black/70 to-transparent pointer-events-none"></div>
@@ -335,7 +463,6 @@
                 </div>
                 <div class="md:w-1/2" data-aos="fade-left">
                     <div class="relative">
-                        <img src="https://images.unsplash.com/photo-1560750588-73207b1ef5b8?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="Spa Interior" class="rounded-lg shadow-xl w-full h-auto">
                         <div class="absolute -bottom-10 -left-10 hidden md:block">
                             <img src="https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80" alt="Treatment" class="rounded-lg shadow-xl w-48 h-48 object-cover">
                         </div>
@@ -358,21 +485,161 @@
     <!-- Galeri Bölümü -->
     <section id="gallery" class="py-20 bg-primary-dark">
         <div class="container mx-auto px-4">
-            <div class="text-center mb-12">
+            <div class="text-center mb-8 fade-in">
                 <span class="section-heading">Galeri</span>
-                <h2 class="text-3xl md:text-4xl font-bold text-accent mb-4">Hizmetlerimizden Örnekler</h2>
-                <p class="max-w-2xl mx-auto text-lg text-text-dark">Shining Beauty Spa & Wellness Merkezi'nde sunduğumuz hizmetlerin ve sonuçların görsel örnekleri.</p>
+                <h2 class="text-3xl md:text-4xl font-bold mb-2 text-accent">Hizmetlerimizden Örnekler</h2>
             </div>
-            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
-                <!-- Resim ve Video Kartları -->
+            <!-- Bilgilendirme kutusu -->
+            <div class="max-w-xl mx-auto bg-accent text-primary-dark rounded-xl p-5 shadow-lg mb-10 text-center text-base font-semibold">
+                Shining Beauty Spa & Wellness Merkezi'nde sunduğumuz hizmetlerin ve sonuçların görsel örnekleri.
+            </div>
+            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 fade-in mb-8">
+                <!-- Galeri Öğesi 1 -->
+                <div class="group relative block rounded-lg overflow-hidden shadow-lg hover:scale-105 transition-transform cursor-pointer" onclick="openLightbox(this)" ontouchstart="handleTouchStart(event)" ontouchend="handleTouchEnd(event, this)">
+                    <img src="uploads/reel2.png" alt="Hizmet Örneği 1" class="w-full h-40 object-cover group-hover:opacity-80 transition-opacity" loading="lazy">
+                    <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition bg-black/40">
+                        <span class="text-white text-lg font-semibold">Görüntüle</span>
+                    </div>
+                </div>
+                <!-- Galeri Öğesi 2 -->
+                <div class="group relative block rounded-lg overflow-hidden shadow-lg hover:scale-105 transition-transform cursor-pointer" onclick="openLightbox(this)" ontouchstart="handleTouchStart(event)" ontouchend="handleTouchEnd(event, this)">
+                    <img src="uploads/N.jpeg" alt="Tırnak Bakımı" class="w-full h-40 object-cover group-hover:opacity-80 transition-opacity" loading="lazy">
+                    <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition bg-black/40">
+                        <span class="text-white text-lg font-semibold">Görüntüle</span>
+                    </div>
+                </div>
+                <!-- Galeri Öğesi 3 (Video) -->
+                <div class="group relative block rounded-lg overflow-hidden shadow-lg hover:scale-105 transition-transform cursor-pointer" onclick="openLightbox(this)" ontouchstart="handleTouchStart(event)" ontouchend="handleTouchEnd(event, this)">
+                    <video src="uploads/B.mp4" class="w-full h-40 object-cover group-hover:opacity-80 transition-opacity" loading="lazy" muted playsinline>
+                        <source src="uploads/B.mp4" type="video/mp4">
+                        Tarayıcınız video etiketini desteklemiyor.
+                    </video>
+                    <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition bg-black/40">
+                        <span class="text-white text-lg font-semibold">Video'yu Oynat</span>
+                    </div>
+                </div>
+                <!-- Galeri Öğesi 4 (Video) -->
+                <div class="group relative block rounded-lg overflow-hidden shadow-lg hover:scale-105 transition-transform cursor-pointer" onclick="openLightbox(this)" ontouchstart="handleTouchStart(event)" ontouchend="handleTouchEnd(event, this)">
+                    <video src="uploads/BL.mp4" class="w-full h-40 object-cover group-hover:opacity-80 transition-opacity" loading="lazy" muted playsinline>
+                        <source src="uploads/BL.mp4" type="video/mp4">
+                        Tarayıcınız video etiketini desteklemiyor.
+                    </video>
+                    <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition bg-black/40">
+                        <span class="text-white text-lg font-semibold">Video'yu Oynat</span>
+                    </div>
+                </div>
+                <!-- Galeri Öğesi 5 -->
+                <div class="group relative block rounded-lg overflow-hidden shadow-lg hover:scale-105 transition-transform cursor-pointer" onclick="openLightbox(this)" ontouchstart="handleTouchStart(event)" ontouchend="handleTouchEnd(event, this)">
+                    <img src="uploads/Face.mp4" alt="Yüz Bakımı" class="w-full h-40 object-cover group-hover:opacity-80 transition-opacity" loading="lazy">
+                    <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition bg-black/40">
+                        <span class="text-white text-lg font-semibold">Görüntüle</span>
+                    </div>
+                </div>
+                <!-- Galeri Öğesi 6 -->
+                <div class="group relative block rounded-lg overflow-hidden shadow-lg hover:scale-105 transition-transform cursor-pointer" onclick="openLightbox(this)" ontouchstart="handleTouchStart(event)" ontouchend="handleTouchEnd(event, this)">
+                    <img src="uploads/Facesmask.jpeg" alt="Maske Uygulaması" class="w-full h-40 object-cover group-hover:opacity-80 transition-opacity" loading="lazy">
+                    <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition bg-black/40">
+                        <span class="text-white text-lg font-semibold">Görüntüle</span>
+                    </div>
+                </div>
+                <!-- Galeri Öğesi 7 -->
+                <div class="group relative block rounded-lg overflow-hidden shadow-lg hover:scale-105 transition-transform cursor-pointer" onclick="openLightbox(this)" ontouchstart="handleTouchStart(event)" ontouchend="handleTouchEnd(event, this)">
+                    <img src="uploads/Foot.mp4" alt="Ayak Bakımı" class="w-full h-40 object-cover group-hover:opacity-80 transition-opacity" loading="lazy">
+                    <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition bg-black/40">
+                        <span class="text-white text-lg font-semibold">Görüntüle</span>
+                    </div>
+                </div>
+                <!-- Galeri Öğesi 8 -->
+                <div class="group relative block rounded-lg overflow-hidden shadow-lg hover:scale-105 transition-transform cursor-pointer" onclick="openLightbox(this)" ontouchstart="handleTouchStart(event)" ontouchend="handleTouchEnd(event, this)">
+                    <img src="uploads/Head.jpeg" alt="Baş Bakımı" class="w-full h-40 object-cover group-hover:opacity-80 transition-opacity" loading="lazy">
+                    <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition bg-black/40">
+                        <span class="text-white text-lg font-semibold">Görüntüle</span>
+                    </div>
+                </div>
+                <!-- Galeri Öğesi 9 -->
+                <div class="group relative block rounded-lg overflow-hidden shadow-lg hover:scale-105 transition-transform cursor-pointer" onclick="openLightbox(this)" ontouchstart="handleTouchStart(event)" ontouchend="handleTouchEnd(event, this)">
+                    <img src="uploads/Massage.mp4" alt="Masaj" class="w-full h-40 object-cover group-hover:opacity-80 transition-opacity" loading="lazy">
+                    <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition bg-black/40">
+                        <span class="text-white text-lg font-semibold">Görüntüle</span>
+                    </div>
+                </div>
+                <!-- Galeri Öğesi 10 -->
+                <div class="group relative block rounded-lg overflow-hidden shadow-lg hover:scale-105 transition-transform cursor-pointer" onclick="openLightbox(this)" ontouchstart="handleTouchStart(event)" ontouchend="handleTouchEnd(event, this)">
+                    <img src="uploads/Msa.mp4" alt="Masaj" class="w-full h-40 object-cover group-hover:opacity-80 transition-opacity" loading="lazy">
+                    <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition bg-black/40">
+                        <span class="text-white text-lg font-semibold">Görüntüle</span>
+                    </div>
+                </div>
+                <!-- Galeri Öğesi 11 -->
+                <div class="group relative block rounded-lg overflow-hidden shadow-lg hover:scale-105 transition-transform cursor-pointer" onclick="openLightbox(this)" ontouchstart="handleTouchStart(event)" ontouchend="handleTouchEnd(event, this)">
+                    <img src="uploads/Nail.jpeg" alt="Tırnak Bakımı" class="w-full h-40 object-cover group-hover:opacity-80 transition-opacity" loading="lazy">
+                    <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition bg-black/40">
+                        <span class="text-white text-lg font-semibold">Görüntüle</span>
+                    </div>
+                </div>
+                <!-- Galeri Öğesi 12 -->
+                <div class="group relative block rounded-lg overflow-hidden shadow-lg hover:scale-105 transition-transform cursor-pointer" onclick="openLightbox(this)" ontouchstart="handleTouchStart(event)" ontouchend="handleTouchEnd(event, this)">
+                    <img src="uploads/Nails.jpeg" alt="Tırnak Bakımı" class="w-full h-40 object-cover group-hover:opacity-80 transition-opacity" loading="lazy">
+                    <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition bg-black/40">
+                        <span class="text-white text-lg font-semibold">Görüntüle</span>
+                    </div>
+                </div>
                 <div class="gallery-item relative rounded-lg overflow-hidden shadow-lg transition-all duration-300 hover:scale-105 cursor-pointer" onclick="openLightbox(this)" ontouchstart="handleTouchStart(event)" ontouchend="handleTouchEnd(event, this)">
-                    <img src="uploads/reel2.png" alt="Hizmet Örneği 1" class="w-full h-48 md:h-64 object-cover" loading="lazy">
+                    <img src="uploads/Relax.mp4" alt="Relaksasyon" class="w-full h-48 md:h-64 object-cover" loading="lazy">
                     <div class="absolute inset-0 bg-black bg-opacity-40 opacity-0 hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
                         <span class="text-white text-lg font-semibold">Görüntüle</span>
                     </div>
                 </div>
                 <div class="gallery-item relative rounded-lg overflow-hidden shadow-lg transition-all duration-300 hover:scale-105 cursor-pointer" onclick="openLightbox(this)" ontouchstart="handleTouchStart(event)" ontouchend="handleTouchEnd(event, this)">
-                    <img src="uploads/reel3.png" alt="Hizmet Örneği 2" class="w-full h-48 md:h-64 object-cover" loading="lazy">
+                    <img src="uploads/Shin.mp4" alt="Hizmet Örneği" class="w-full h-48 md:h-64 object-cover" loading="lazy">
+                    <div class="absolute inset-0 bg-black bg-opacity-40 opacity-0 hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                        <span class="text-white text-lg font-semibold">Görüntüle</span>
+                    </div>
+                </div>
+                <div class="gallery-item relative rounded-lg overflow-hidden shadow-lg transition-all duration-300 hover:scale-105 cursor-pointer" onclick="openLightbox(this)" ontouchstart="handleTouchStart(event)" ontouchend="handleTouchEnd(event, this)">
+                    <img src="uploads/Smile.mp4" alt="Gülümseme" class="w-full h-48 md:h-64 object-cover" loading="lazy">
+                    <div class="absolute inset-0 bg-black bg-opacity-40 opacity-0 hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                        <span class="text-white text-lg font-semibold">Görüntüle</span>
+                    </div>
+                </div>
+                <div class="gallery-item relative rounded-lg overflow-hidden shadow-lg transition-all duration-300 hover:scale-105 cursor-pointer" onclick="openLightbox(this)" ontouchstart="handleTouchStart(event)" ontouchend="handleTouchEnd(event, this)">
+                    <img src="uploads/Tyning.mp4" alt="Tuning" class="w-full h-48 md:h-64 object-cover" loading="lazy">
+                    <div class="absolute inset-0 bg-black bg-opacity-40 opacity-0 hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                        <span class="text-white text-lg font-semibold">Görüntüle</span>
+                    </div>
+                </div>
+                <div class="gallery-item relative rounded-lg overflow-hidden shadow-lg transition-all duration-300 hover:scale-105 cursor-pointer" onclick="openLightbox(this)" ontouchstart="handleTouchStart(event)" ontouchend="handleTouchEnd(event, this)">
+                    <img src="uploads/View.jpeg" alt="Merkez Görünümü" class="w-full h-48 md:h-64 object-cover" loading="lazy">
+                    <div class="absolute inset-0 bg-black bg-opacity-40 opacity-0 hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                        <span class="text-white text-lg font-semibold">Görüntüle</span>
+                    </div>
+                </div>
+                <div class="gallery-item relative rounded-lg overflow-hidden shadow-lg transition-all duration-300 hover:scale-105 cursor-pointer" onclick="openLightbox(this)" ontouchstart="handleTouchStart(event)" ontouchend="handleTouchEnd(event, this)">
+                    <img src="uploads/b.jpeg" alt="Hizmet Örneği" class="w-full h-48 md:h-64 object-cover" loading="lazy">
+                    <div class="absolute inset-0 bg-black bg-opacity-40 opacity-0 hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                        <span class="text-white text-lg font-semibold">Görüntüle</span>
+                    </div>
+                </div>
+                <div class="gallery-item relative rounded-lg overflow-hidden shadow-lg transition-all duration-300 hover:scale-105 cursor-pointer" onclick="openLightbox(this)" ontouchstart="handleTouchStart(event)" ontouchend="handleTouchEnd(event, this)">
+                    <img src="uploads/bn.mp4" alt="Hizmet Örneği" class="w-full h-48 md:h-64 object-cover" loading="lazy">
+                    <div class="absolute inset-0 bg-black bg-opacity-40 opacity-0 hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                        <span class="text-white text-lg font-semibold">Görüntüle</span>
+                    </div>
+                </div>
+                <div class="gallery-item relative rounded-lg overflow-hidden shadow-lg transition-all duration-300 hover:scale-105 cursor-pointer" onclick="openLightbox(this)" ontouchstart="handleTouchStart(event)" ontouchend="handleTouchEnd(event, this)">
+                    <img src="uploads/f.mp4" alt="Hizmet Örneği" class="w-full h-48 md:h-64 object-cover" loading="lazy">
+                    <div class="absolute inset-0 bg-black bg-opacity-40 opacity-0 hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                        <span class="text-white text-lg font-semibold">Görüntüle</span>
+                    </div>
+                </div>
+                <div class="gallery-item relative rounded-lg overflow-hidden shadow-lg transition-all duration-300 hover:scale-105 cursor-pointer" onclick="openLightbox(this)" ontouchstart="handleTouchStart(event)" ontouchend="handleTouchEnd(event, this)">
+                    <img src="uploads/fa.jpeg" alt="Kadın Yüz Bakımı" class="w-full h-48 md:h-64 object-cover" loading="lazy">
+                    <div class="absolute inset-0 bg-black bg-opacity-40 opacity-0 hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                        <span class="text-white text-lg font-semibold">Görüntüle</span>
+                    </div>
+                </div>
+                <div class="gallery-item relative rounded-lg overflow-hidden shadow-lg transition-all duration-300 hover:scale-105 cursor-pointer" onclick="openLightbox(this)" ontouchstart="handleTouchStart(event)" ontouchend="handleTouchEnd(event, this)">
+                    <img src="uploads/fot.mp4" alt="Hizmet Örneği" class="w-full h-48 md:h-64 object-cover" loading="lazy">
                     <div class="absolute inset-0 bg-black bg-opacity-40 opacity-0 hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
                         <span class="text-white text-lg font-semibold">Görüntüle</span>
                     </div>
@@ -390,57 +657,85 @@
             </div>
         </div>
         <script>
-            // Touch işlemleri için değişkenler
-            let touchStartY = 0;
-            let touchEndY = 0;
-            let touchStartX = 0;
-            let touchEndX = 0;
-            let touchStartTime = 0;
-
-            function handleTouchStart(event) {
-                touchStartY = event.touches[0].clientY;
-                touchStartX = event.touches[0].clientX;
+            function handleSliderTouchStart(event) {
+                sliderTouchStartY = event.touches[0].clientY;
+                sliderTouchStartX = event.touches[0].clientX;
                 touchStartTime = new Date().getTime();
             }
 
-            function handleTouchEnd(event, element) {
-                touchEndY = event.changedTouches[0].clientY;
-                touchEndX = event.changedTouches[0].clientX;
-                const touchEndTime = new Date().getTime();
-                const touchDuration = touchEndTime - touchStartTime;
-
+            function handleSliderTouchEnd(event) {
+                sliderTouchEndY = event.changedTouches[0].clientY;
+                sliderTouchEndX = event.changedTouches[0].clientX;
+                const touchTime = new Date().getTime() - touchStartTime;
+                
+                // Dikey kaydırma için
+                const touchDiffY = sliderTouchStartY - sliderTouchEndY;
+                
+                // Yatay kaydırma için
+                const touchDiffX = sliderTouchStartX - sliderTouchEndX;
+                
                 // Hızlı dokunma kontrolü (300ms'den kısa)
-                if (touchDuration < 300 && Math.abs(touchEndY - touchStartY) < 20 && Math.abs(touchEndX - touchStartX) < 20) {
-                    openLightbox(element);
+                const isTap = touchTime < 300 && Math.abs(touchDiffX) < 10 && Math.abs(touchDiffY) < 10;
+                
+                if (isTap) {
+                    // Dokunma işlemi - mevcut slaytı göster/gizle
+                    toggleSlideContent(currentSlide);
+                } else if (Math.abs(touchDiffX) > Math.abs(touchDiffY)) {
+                    // Yatay kaydırma daha belirgin
+                    if (touchDiffX > 50) {
+                        // Sola kaydırma - sonraki slayt
+                        nextSlide();
+                    } else if (touchDiffX < -50) {
+                        // Sağa kaydırma - önceki slayt
+                        prevSlide();
+                    }
                 }
             }
-
-            function handleLightboxTouchStart(event) {
-                touchStartY = event.touches[0].clientY;
-            }
-
-            function handleLightboxTouchEnd(event) {
-                touchEndY = event.changedTouches[0].clientY;
-                if (touchEndY - touchStartY > 50) { // Aşağı kaydırma
-                    closeLightbox();
-                }
-            }
-
+            
             function openLightbox(element) {
-                const img = element.querySelector('img');
+                const mediaElement = element.querySelector('img, video');
                 const lightbox = document.getElementById('lightbox');
                 const lightboxImg = document.getElementById('lightbox-img');
+                const src = mediaElement.src;
                 
-                lightboxImg.src = img.src;
-                lightboxImg.alt = img.alt;
+                // Dosya uzantısına göre video veya resim olduğunu kontrol et
+                const isVideo = src.endsWith('.mp4') || src.endsWith('.webm') || src.endsWith('.ogg');
+                
+                if (isVideo) {
+                    // Eğer video ise, img elementini video ile değiştir
+                    const videoElement = document.createElement('video');
+                    videoElement.src = src;
+                    videoElement.controls = true;
+                    videoElement.autoplay = true;
+                    videoElement.id = 'lightbox-video';
+                    videoElement.className = 'max-h-[85vh] max-w-[90vw] object-contain rounded-lg';
+                    
+                    // Mevcut img elementini kaldır ve video elementini ekle
+                    lightboxImg.style.display = 'none';
+                    lightbox.querySelector('.relative').appendChild(videoElement);
+                } else {
+                    // Eğer resim ise, normal davran
+                    lightboxImg.src = src;
+                    lightboxImg.alt = mediaElement.alt;
+                    lightboxImg.style.display = 'block';
+                    
+                    // Varsa önceki video elementini kaldır
+                    const existingVideo = document.getElementById('lightbox-video');
+                    if (existingVideo) {
+                        existingVideo.remove();
+                    }
+                }
+                
                 lightbox.classList.remove('hidden');
                 lightbox.style.display = 'flex';
                 document.body.style.overflow = 'hidden';
 
                 // Mobil cihazlarda daha iyi performans için
                 if (window.innerWidth <= 768) {
-                    lightboxImg.style.maxHeight = '85vh';
-                    lightboxImg.style.maxWidth = '90vw';
+                    if (!isVideo) {
+                        lightboxImg.style.maxHeight = '85vh';
+                        lightboxImg.style.maxWidth = '90vw';
+                    }
                 }
             }
             
@@ -550,14 +845,14 @@
                 </a>
                 <!-- Instagram Reel 2 -->
                 <a href="https://www.instagram.com/reel/DDM_spFoAwB/?utm_source=ig_web_copy_link&igsh=MzRlODBiNWFlZA==" target="_blank" class="group relative block rounded-lg overflow-hidden shadow-lg hover:scale-105 transition-transform">
-                    <img src="reel2.png" alt="Reel 2" class="w-full h-40 object-cover group-hover:opacity-80 transition-opacity" />
+                    <img src="uploads/reel2.png" alt="Reel 2" class="w-full h-40 object-cover group-hover:opacity-80 transition-opacity" />
                     <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition bg-black/40">
                         <i class="fab fa-instagram text-2xl text-white"></i>
                     </div>
                 </a>
                 <!-- Instagram Reel 3 -->
                 <a href="https://www.instagram.com/reel/DCo9MRSt-PA/?utm_source=ig_web_copy_link&igsh=MzRlODBiNWFlZA==" target="_blank" class="group relative block rounded-lg overflow-hidden shadow-lg hover:scale-105 transition-transform">
-                    <img src="reel3.png" alt="Reel 3" class="w-full h-40 object-cover group-hover:opacity-80 transition-opacity" />
+                    <img src="uploads/reel3.png" alt="Reel 3" class="w-full h-40 object-cover group-hover:opacity-80 transition-opacity" />
                     <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition bg-black/40">
                         <i class="fab fa-instagram text-2xl text-white"></i>
                     </div>
@@ -653,7 +948,7 @@
                     <div class="mb-4">
                         <span class="block text-accent text-xl font-bold mb-2">Çalışma Saatleri</span>
                         <span class="block">Pazartesi - Cumartesi: 10:00 - 20:00</span><br>
-                        <span class="block">Pazar: 11:00 - 18:00</span>
+                        <span class="block">Pazar: Kapalı</span>
                     </div>
                     <!-- Sosyal Medya İkonları -->
                     <div class="flex justify-center gap-5 mt-6">
@@ -766,17 +1061,14 @@
             });
         });
 
-        // Touch events for better mobile interaction
-        let touchStartY = 0;
-        let touchEndY = 0;
-
+        // Touch events for better mobile interaction with navbar
         document.addEventListener('touchstart', e => {
-            touchStartY = e.touches[0].clientY;
+            navTouchStartY = e.touches[0].clientY;
         }, false);
 
         document.addEventListener('touchend', e => {
-            touchEndY = e.changedTouches[0].clientY;
-            if (touchEndY < touchStartY && touchStartY - touchEndY > 50) {
+            navTouchEndY = e.changedTouches[0].clientY;
+            if (navTouchEndY < navTouchStartY && navTouchStartY - navTouchEndY > 50) {
                 hamburger.classList.remove('active');
                 navMenu.classList.remove('active');
             }
